@@ -29,6 +29,10 @@ J = 0;
 Theta1_grad = zeros(size(Theta1));
 Theta2_grad = zeros(size(Theta2));
 
+% size(Theta1)
+% size(Theta2)
+
+
 % ====================== YOUR CODE HERE ======================
 % Instructions: You should complete the code by working through the
 %               following parts.
@@ -60,21 +64,41 @@ Theta2_grad = zeros(size(Theta2));
 %               the regularization separately and then add them to Theta1_grad
 %               and Theta2_grad from Part 2.
 %
-e_3 = zeros(m,10);
-e_2 = zeros(m, 25);
+yVector = zeros(num_labels, m);
+hO = zeros(num_labels, m);
+
+delta_2 = zeros(hidden_layer_size, 1);
+delta_3 = zeros(num_labels, 1);
+
+for i = 1:1;
+yVector(y(i), i) = 1;
+a1 = X(i, :)';
+z2 = Theta1 * [1; a1];
+a2 = sigmoid(z2);
+z3 = Theta2 * [1; a2];
+a3 = hO(:, i) = sigmoid(z3);
 
 
-cost = zeros(size(y));
-for i = 1:size(y);
-currY = zeros(num_labels, 1);
-currY(y(i)) = 1;
-result1 = sigmoid( [ones(1,1) X(i, :)] * Theta1');
-result2 = sigmoid([ones(1,1) result1] * Theta2');
-cost(i) = (log(result2) * -currY) - (log(1 - result2) * (1 - currY));
+d3 = a3 - yVector(:, i);
+
+% size(Theta2')
+% size(d3)
+% size(Theta2' * d3)
+% size(sigmoidGradient(z2))
+
+d2 = Theta2(:, 2:end)' * d3 .* sigmoidGradient(z2);
+delta_2 = delta_2 + d2 * a1';
+delta_3 = delta_3 + d3 * a2';
+
 end;
-regResult = sum( (Theta1(:, 2:end) .^2)(:)) + sum( (Theta2(:, 2:end) .^2)(:));
 
-J = 1/m * sum(cost) + (lambda/(2*m)) * regResult;
+regularization = sum( (Theta1(:, 2:end) .^2)(:)) + sum( (Theta2(:, 2:end) .^2)(:));
+
+J = 1/m * sum((-yVector .* log(hO) - (1 - yVector) .* log(1 - hO))(:)) + lambda/(2*m) * regularization;
+
+% Theta1_grad(2:end) = 1/m * delta_2;
+
+% Theta2_grad(2:end) = 1/m * delta_3;
 
 % -------------------------------------------------------------
 
