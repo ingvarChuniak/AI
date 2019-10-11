@@ -62,37 +62,37 @@ Theta2_grad = zeros(size(Theta2));
 %               the regularization separately and then add them to Theta1_grad
 %               and Theta2_grad from Part 2.
 %
-yVector = zeros(num_labels, m);
-hO = zeros(num_labels, m);
+% Make Y result Vector
 
-delta_2 = zeros(size(Theta1_grad));
-delta_3 = zeros(size(Theta2_grad));
+yV = zeros(m, num_labels);
 
-% delta_2(:, 1) = Theta1(:, 1);
-% delta_3(:, 1) = Theta2(:, 1);
+for i = 1:num_labels
 
-for i = 1:m;
-yVector(y(i), i) = 1;
-a1 = X(i, :)';
-z2 = Theta1 * [1; a1];
-a2 = sigmoid(z2);
-z3 = Theta2 * [1; a2];
-a3 = hO(:, i) = sigmoid(z3);
-
-
-d3 = a3 - yVector(:, i);
-
-d2 = Theta2(:, 2:end)' * d3 .* sigmoidGradient(z2);
-
-delta_2(:, 2:end) = delta_2(:, 2:end) + (d2 * a1');
-delta_3(:, 2:end) = delta_3(:, 2:end) + (d3 * a2');
+yV(:, i) = y == i;
 
 end;
 
-regularization = sum( (Theta1(:, 2:end) .^2)(:)) + sum( (Theta2(:, 2:end) .^2)(:));
+a_1 = [ones(m,1) X];
 
-J = 1/m * sum((-yVector .* log(hO) - (1 - yVector) .* log(1 - hO))(:)) + lambda/(2*m) * regularization;
+% size(a_1)
 
+z_2 = a_1 * Theta1'; 
+
+% size(z_2)
+
+a_2 = [ones(m, 1) sigmoid(z_2)];
+
+% size(a_2)
+
+z_3 = a_2 * Theta2';
+
+% size(z_3)
+
+a_3 = sigmoid(z_3);
+
+regularization = lambda/(2*m) * (sum(Theta1(:, 2:end)(:) .^2) + sum(Theta2(: ,2:end)(:) .^2));
+
+J = (1/m) * sum((-yV .* log(a_3) - (1 - yV) .* log(1 - a_3))(:)) + regularization;
 
 
 % -------------------------------------------------------------
@@ -100,9 +100,6 @@ J = 1/m * sum((-yVector .* log(hO) - (1 - yVector) .* log(1 - hO))(:)) + lambda/
 % =========================================================================
 
 % Unroll gradients
-
-Theta1_grad = (1/m) * delta_2;
-Theta2_grad = (1/m) * delta_3;
 
 grad = [Theta1_grad(:) ; Theta2_grad(:)];
 
