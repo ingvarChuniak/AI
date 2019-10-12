@@ -94,6 +94,11 @@ regularization = lambda/(2*m) * (sum(Theta1(:, 2:end)(:) .^2) + sum(Theta2(: ,2:
 
 J = (1/m) * sum((-yV .* log(a_3) - (1 - yV) .* log(1 - a_3))(:)) + regularization;
 
+d_3 = a_3 - yV;
+
+
+
+stop
 
 % -------------------------------------------------------------
 
