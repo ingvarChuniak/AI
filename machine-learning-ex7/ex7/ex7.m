@@ -107,7 +107,6 @@ fprintf('\nRunning K-Means clustering on pixels from an image.\n\n');
 
 %  Load an image of a bird
 A = double(imread('bird_small.png'));
-
 % If imread does not work for you, you can try instead
 %   load ('bird_small.mat');
 
@@ -120,7 +119,6 @@ img_size = size(A);
 % Each row will contain the Red, Green and Blue pixel values
 % This gives us our dataset matrix X that we will use K-Means on.
 X = reshape(A, img_size(1) * img_size(2), 3);
-
 % Run your K-Means algorithm on this data
 % You should try different values of K and max_iters here
 K = 16; 
